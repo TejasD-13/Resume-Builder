@@ -18,7 +18,7 @@ const uploadResumeImages = async (req, res) => {
                 return res.status(404).json({ message: "Resume not found or unathorized"});
             }
 
-            const uploadsFolder = path.json(__dirname, '..', 'uploads');
+            const uploadsFolder = path.join(__dirname, '..', 'uploads');
             const baseUrl = `${req.protocol}://${req.get("host")}`;
 
             const newThumbnail = req.files.thumbnail?.[0];

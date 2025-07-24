@@ -10,10 +10,10 @@ function ProfileInfoForm({ profileData, updateSection, onNext }) {
       <div className="flex flex-col items-center gap-6 md:gap-10">
         {/* Profile Photo */}
         <ProfilePhotoSelector
-          image={profileData?.profileImg || profileData?.profilePreviewUrl}
+          image={profileData?.profileImg}
           setImage={(value) => updateSection("profileImg", value)}
           preview={profileData?.profilePreviewUrl}
-          setPreiew={(value) => updateSection("profilePreviewUrl", value)}
+          setPreview={(value) => updateSection("profilePreviewUrl", value)}
         />
 
         {/* Inputs */}

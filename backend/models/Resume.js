@@ -16,12 +16,23 @@ const ResumeSchema = new mongoose.Schema(
         colorPalette: [String],
         },
         profileInfo: {
-            profilePreviewUrl: String,
-            fullName: String,
-            location: String,
-            linkedin: String,
-            github: String,
-            website: String,
+            profileImg: { type: String, default: null },
+            profilePreviewUrl: { type: String, default: "" },
+            fullName: { type: String, default: "" },
+            designation: { type: String, default: "" },
+            summary: { type: String, default: "" },
+            location: { type: String, default: "" },
+            linkedin: { type: String, default: "" },
+            github: { type: String, default: "" },
+            website: { type: String, default: "" }
+        },
+        contactInfo: {
+            email: { type: String, default: "" },
+            phone: { type: String, default: "" },
+            location: { type: String, default: "" },
+            linkedin: { type: String, default: "" },
+            github: { type: String, default: "" },
+            website: { type: String, default: "" }
         },
         workExperience: [
             {

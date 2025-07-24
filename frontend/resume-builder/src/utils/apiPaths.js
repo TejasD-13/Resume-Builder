@@ -14,7 +14,7 @@ export const API_PATHS = {
         GET_BY_ID: (id) => `/api/resume/${id}`,   // ✅ FIXED
         UPDATE: (id) => `/api/resume/${id}`,    //PUT
         DELETE: (id) => `/api/resume/${id}`,    // DELETE
-        UPLOAD_IMAGES: (id) => `/api/resume/${id}/upload-images`, // PUT
+        UPLOAD_IMAGES: (id) => `/api/resume/${id}/upload-image`, // POST
     },
 
      

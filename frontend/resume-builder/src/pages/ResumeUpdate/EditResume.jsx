@@ -26,6 +26,11 @@ import ProjectsDeatilForm from './Forms/ProjectsDeatilForm';
 import AdditionalInfoCard from './Forms/AdditionalInfoCard';
 import CertificationInfoForm from './Forms/CertificationInfoForm';
 import RenderResume from '../../components/ResumeTemplates/RenderResume'
+import html2canvas from 'html2canvas';
+import Modal from '../../components/Modal'
+import ThemeSelector from './ThemeSelector';
+import Chatbot from '../../components/Chatbot/Chatbot';
+
 function EditResume() {
   const {resumeId} = useParams();
   const navigate = useNavigate();
@@ -113,271 +118,7 @@ function EditResume() {
   const [errorMsg, setErrorMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const validateAndNext = (e) => {
-    const errors = [];
-    
-    switch(currentPage){
-      case "profile-info":
-        const { fullName, designation, summary} = resumeData.profileInfo;
-        if(!fullName.trim()) errors.push("Full Name is required");
-        if(!designation.trim()) errors.push("Designation is required");
-        if(!summary.trim()) errors.push("Summary is required");
-        break;
-
-      case "contact-info":
-        const {email, phone} = resumeData.contactInfo;
-        if(!email.trim() || !/^\S+@\S+\.\S+$/.test(email))
-          errors.push("Valid email is required.")
-        if(!phone.trim())
-          errors.push("Valid 10-digit phone number is required");
-        break;
-
-      case "work-experience":
-        resumeData.workExperience.forEach(
-          ({ company, role, startDate, endDate}, index) => {
-            if(!company.trim())
-              errors.push(`Company is required in experience ${index + 1}`);
-
-            if(!role.trim())
-              errors.push(`Role is required in experience ${index+1}`);
-            if(!startDate || !endDate)
-              errors.push(`Start and End date is required in experience ${index+1}`)
-          }
-        )
-        break;
-
-        case 'education-info': 
-          resumeData.eduacationInfo?.forEach(
-            ({ degree, institution, startDate, endDate}, index) => {
-              if(!degree.trim())
-                errors.push(`Degree is required in education ${index+1}`)
-              if(!institution.trim())
-                errors.push(`Institution is required in education ${index+1}`)
-              if(!startDate || !endDate)
-                errors.push(`Start and End date is required in education ${index+1}`)
-            }
-          )
-          break;
-
-        case 'skillsInfo':
-          resumeData.skills.forEach(({ name, progress }, index) => {
-            if(!name.trim())
-              errors.push(`Skills Name is requried in skill ${index+1}`);
-            if(progress < 1 || progress > 100)
-              errors.push(`Skill progress must be between 1 and 100 in skill ${index+1}`);
-          })
-          break;
-
-        case 'projects':
-          resumeData.projects.forEach(
-            ({ title, description} , index) => {
-              if(!title.trim())
-                errors.push(`Project title is required in project ${index+1}`);
-
-              if(!description.trim())
-                errors.push(`Project description is required in project ${index+1}`)
-  
-            }
-          )
-          break;
-
-          case 'certifications':
-            resumeData.certification.forEach((
-              {title, issuer}, index) => {
-                if(!title.trim())
-                  errors.push(`Certification title is required is certification ${index+1}`);
-
-                if(!issuer.trim())
-                  errors.push(`Issuer is required iin certification ${index+1}`);
-              }
-            )
-            break;
-
-          case 'additionalInfo':
-            if(
-              resumeData.languages.length === 0 || 
-              !resumeData.languages[0].name?.trim()
-            ){
-              errors.push("At least one language is required");
-            }
-
-            if(
-              resumeData.interests.length === 0 ||
-              !resumeData.interests[0]?.trim()
-            ){
-              errors.push("At least one interest is required");
-            }
-            break;
-
-          default:
-            break;
-    }
-
-    if(errors.length > 0){
-      setErrorMsg(errors.join(", "));
-      return;
-    }
-
-    // Move to next step
-    setErrorMsg("");
-    goToNextStep();
-  }
-
-  const goToNextStep = () => {
-    const pages = [
-      "profile-info",
-      "contact-info",
-      "work-experience",
-      "education-info",
-      "skillsInfo",
-      "projects",
-      "certifications",
-      "additionalInfo",
-    ];
-
-    if (currentPage === "additionalInfo") setOpenPreviewModel(true);
-
-    const currentIndex = pages.indexOf(currentPage);
-    if(currentIndex !== -1 && currentIndex < pages.length-1){
-      const nextIndex = currentIndex+1;
-      setCurrentPage(pages[nextIndex]);
-
-      // set progress as percentage
-      const percent = Math.round((nextIndex/ (pages.length-1))*100);
-      setProgress(percent);
-      window.scrollTo({ top: 0, behavior: "smooth"});
-    } 
-  }
-
-  const goBack = () => {
-     const pages = [
-      "profile-info",
-      "contact-info",
-      "work-experience",
-      "education-info",
-      "skillsInfo",
-      "projects",
-      "certifications",
-      "additionalInfo",
-    ];
-
-    if (currentPage === "profile-info") navigate("/dashboard");
-
-    const currentIndex = pages.indexOf(currentPage);
-    if(currentIndex > 0){
-      const prevIndex = currentIndex - 1;
-      setCurrentPage(pages[prevIndex]);
-
-      // update progress
-      const percent = Math.round((prevIndex/(pages.length-1))*100);
-      setProgress(percent);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }
-
-  const renderForm = () => {
-    switch (currentPage){
-      case 'profile-info':
-        return (
-          <ProfileInfoForm 
-            profileData= {resumeData?.profileInfo}
-            updateSection={(key, value) => {
-              updateSection("profileInfo", key, value);
-            }}
-            onNext={validateAndNext}
-          />
-        );
-
-        case "contact-info":
-          return (
-            <ContactInfoForm 
-              contactInfo={resumeData?.contactInfo}
-              updateSection={(key, value) => {
-                updateSection("contactInfo", key, value);
-              }}
-            />
-          )
-
-        case "work-experience":
-          return (
-            <WorkExperienceForm
-              workExperience={resumeData?.workExperience}
-              updateArrayItem={(index, key, value) =>
-                updateArrayItem("workExperience", index, key, value)
-              }
-              addArrayItem={(newItem) => addArrayItem("workExperience", newItem)}
-              removeArrayItem={(index) => removeArrayItem("workExperience", index)}
-            />
-          );
-
-        case "education-info":
-          return (
-            <EducationDetailsForm
-                eduacationInfo={resumeData?.education}
-                updatedArrayItem={(index, key, value) => {
-                  updateArrayItem("education", index, key, value)
-                }}
-                addArrayItem={(newItem) => addArrayItem('education', newItem)}
-                removeArrayItem={(index) => removeArrayItem('education', index)}
-              />
-
-          );
-
-          case "skillsInfo":
-            return (
-              <SkillsInfoForm 
-                skillsInfo = {resumeData?.skills}
-                updateArrayItem={(index, key, value) => {
-                  updateArrayItem("skills", index, key, value);
-                }}
-                addArrayItem={(newItem) => addArrayItem("skills",newItem)}
-                removeArrayItem={(index) => removeArrayItem("skills", index)}
-              />
-            )
-
-          case "projects": 
-            return (
-              <ProjectsDeatilForm 
-                  projectInfo={resumeData?.projects}
-                  updateArrayItem={(index, key, value) => {
-                    updateArrayItem("projects",index,key, value);
-                  }}
-                  addArrayItem={(newItem) => addArrayItem("projects", newItem)}
-                  removeArrayItem={(index) => removeArrayItem("projects", index)}
-              />
-            );
-
-          case 'certifications':
-            return(
-              <CertificationInfoForm 
-                  certificationInfo={resumeData?.certification}
-                  updateArrayItem={(index, key, value) => {
-                    updateArrayItem("certifications", index, key, value);
-                  }}
-                  addArrayItem={(newItem) => addArrayItem("certifications", newItem)}
-                  removeArrayItem={(index) => {
-                    removeArrayItem('certifications', index)
-                  }}
-              />
-            );
-
-          case 'additionalInfo':
-              return (
-                <AdditionalInfoCard 
-                  languages={resumeData.languages}
-                  interests={resumeData.interests}
-                  updateArrayItem={(section, index, key, value) => 
-                    updateArrayItem(section, index, key, value)
-                  }
-                  addArrayItem={(section, newItem) => addArrayItem(section, newItem)}
-                  removeArrayItem={(section, index) => removeArrayItem(section, index)}
-                />
-              );
-
-        default:
-          return null;
-    }
-  }
+  // Remove currentPage, progress, goToNextStep, goBack, validateAndNext, and renderForm logic
 
   const updateSection = (section, key, value) => {
     setResumeData((prev) => ({
@@ -455,36 +196,36 @@ function EditResume() {
       );
       console.log("Resume response:", response.data);
 
-
       if(response.data) {
         const resumeInfo = response.data;
-
+        console.log("Fetched resumeInfo:", resumeInfo);
         setResumeData((prevState) => ({
           ...prevState,
-          title: resumeInfo?.title || "Untitled",
-          template: resumeInfo?.template || prevState?.template,
-          profileInfo: resumeInfo?.profileInfo || {
+          ...resumeInfo,
+          profileInfo: {
             profileImg: null,
             profilePreviewUrl: "",
             fullName: "",
             designation: "",
             summary: "",
+            ...(resumeInfo.profileInfo || {})
           },
-          contactInfo: resumeInfo?.contactInfo || {
+          contactInfo: {
             email: "",
             phone: "",
             location: "",
-            linkedIn: "",
+            linkedin: "",
             github: "",
             website: "",
+            ...(resumeInfo.contactInfo || {})
           },
-          workExperience: resumeInfo?.workExperience || [],
-          education: resumeInfo?.education || [],
-          skills: resumeInfo?.skills || [],
-          projects: resumeInfo?.projects || [],
-          certification: resumeInfo?.certification || [],
-          languages: resumeInfo?.languages || resumeInfo?.language || [],
-          interests: resumeInfo?.interests || [],
+          workExperience: resumeInfo.workExperience || [],
+          education: resumeInfo.education || [],
+          skills: resumeInfo.skills || [],
+          projects: resumeInfo.projects || [],
+          certification: resumeInfo.certification || [],
+          languages: resumeInfo.languages || resumeInfo.language || [],
+          interests: resumeInfo.interests || [],
         }));
       }
     } catch (error){
@@ -492,9 +233,97 @@ function EditResume() {
     }
   };
 
-  const updateResumeImages = async (thumbnail, profilePreviewUrl) => {}
+  const uploadResumeImages = async() => {
+    try {
+      setIsLoading(true)
 
-  const handleDeleteResume = async () => {}
+      // Patch oklch() colors in the resume DOM before html2canvas
+      patchOklchColors(resumeRef.current);
+
+      // Patch background color to avoid oklch error in html2canvas
+      const resumeEl = resumeRef.current;
+      const originalBg = resumeEl.style.backgroundColor;
+      resumeEl.style.backgroundColor = '#fff';
+
+      const imageDataUrl = await captureElementAsImage(resumeEl)
+
+      // Restore original background color
+      resumeEl.style.backgroundColor = originalBg;
+
+      //convert base64 to file
+      const thumbnailFile = dataURLtoFile(
+        imageDataUrl,
+        `resume-${resumeId}.png`
+      );
+
+      const profileImageFile = resumeData?.profileInfo?.profileImg || null;
+
+      const formData = new FormData();
+      if(profileImageFile) formData.append("profileImage", profileImageFile);
+      if(thumbnailFile) formData.append("thumbnail", thumbnailFile);
+
+      const uploadResponse = await axiosInstance.post(
+        API_PATHS.RESUME.UPLOAD_IMAGES(resumeId),
+        formData,
+        { headers: {"Content-Type": "multipart/form-data"}}
+      );
+
+      const { thumbnailLink , profilePreviewUrl } = uploadResponse.data;
+      console.log("RESUME_DATA__", resumeData);
+
+      // CALL the second api to update other resume data
+      await updateResumeDetails(thumbnailLink, profilePreviewUrl);
+
+      toast.success("Resume Updated Successfully!");
+      navigate("/dashboard");
+      
+    } catch (error) {
+      console.error("Error uploading images: ", error);
+      toast.error("Failed to upload images ")
+      
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const updateResumeDetails = async (thumbnail, profilePreviewUrl) => {
+    try {
+      setIsLoading(true);
+
+      console.log("Saving resumeData:", resumeData);
+      const response = await axiosInstance.put(
+        API_PATHS.RESUME.UPDATE(resumeId),
+        {
+          ...resumeData,
+          thumbnailLink: thumbnail || "",
+          profileInfo: {
+            ...resumeData.profileInfo,
+            profilePreviewUrl: profilePreviewUrl || ""
+          },
+        }
+      );
+      console.log("profileInfo being saved:", resumeData.profileInfo);
+    } catch (error) {
+      console.error("Error Capturing image", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  // Delete 
+  const handleDeleteResume = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axiosInstance.delete(API_PATHS.RESUME.DELETE(resumeId));
+      toast.success('Resume Deleted Successfully')
+      navigate('/dashboard')
+    } catch (error) {
+      console.error("Error capturing image: ", error);
+      
+    }finally{
+      setIsLoading(false);
+    }
+  }
 
   const reactToPrintFn = useReactToPrint({ contentRef: resumeDownloadRef })
 
@@ -518,115 +347,230 @@ function EditResume() {
   }, []);
 
   return (
-   <DashboardLayout>
-    <div className='container mx-auto'>
-      <div className='flex items-center justify-between gap-5 bg-white rounded-lg border border-purple-100 py-3 px-4 mb-4'>
-        <TitleInput
-            title = {resumeData.title}
-            setTitle = {(value) => 
-              setResumeData((prevState) => ({
-                ...prevState,
-                title: value,
-              }))
-            } 
-          />
+    <>
+      {/* Floating Chatbot */}
+      <Chatbot />
+      {/* Existing EditResume UI */}
+      <DashboardLayout>
+        <div className='container mx-auto'>
+          <div className='flex items-center justify-between gap-5 bg-white rounded-lg border border-purple-100 py-3 px-4 mb-4'>
+            <TitleInput
+                title = {resumeData.title}
+                setTitle = {(value) => 
+                  setResumeData((prevState) => ({
+                    ...prevState,
+                    title: value,
+                  }))
+                } 
+              />
 
-          <div className="flex items-center gap-3 md:gap-4">
-          <button
-            className="flex items-center gap-2 px-3 py-1.5 border border-gray-300 rounded-md text-sm hover:bg-gray-100 transition"
-            onClick={() => setOpenThemeSelector(true)}
-          >
-            <LuPalette className="text-base" />
-            <span className="hidden md:block">Change Theme</span>
-          </button>
-
-          <button
-            className="flex items-center gap-2 px-3 py-1.5 border border-red-300 text-red-600 rounded-md text-sm hover:bg-red-50 transition"
-            onClick={handleDeleteResume}
-          >
-            <LuTrash className="text-base" />
-            <span className="hidden md:block">Delete</span>
-          </button>
-
-          <button
-            className="flex items-center gap-2 px-3 py-1.5 border border-blue-300 text-blue-600 rounded-md text-sm hover:bg-blue-50 transition"
-            onClick={() => setOpenPreviewModel(true)}
-          >
-            <LuDownload className="text-base" />
-            <span className="hidden md:block">Preview & Download</span>
-          </button>
-        </div>
-
-      </div>
-
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
-        <div className='bg-white rounded-lg border border-purple-100 overflow-hidden'>
-          
-          <StepProgress progress={progress} />
-
-          { renderForm()}
-
-          <div className='mx-5'>
-            {errorMsg && (
-              <div className='flex items-center gap-2 text-[11px] font-medium text-amber-600 bg-amber-100 px-2 py-0.5 my-1 rounded'>
-                <LuCircleAlert className='text-md'/>
-                {errorMsg}
-              </div>
-            )} 
-
-            <div className='flex items-center justify-end gap-3 mt-6'>
-              <button 
-                className='flex items-center gap-2 bg-purple-100 hover:bg-purple-200 text-purple-700 font-medium px-4 py-2 rounded-lg transition-all'
-                onClick={goBack}
-                disabled={isLoading}
+              <div className="flex items-center gap-3 md:gap-4">
+              <button
+                className="flex items-center gap-2 px-3 py-1.5 border border-gray-300 rounded-md text-sm hover:bg-gray-100 transition"
+                onClick={() => setOpenThemeSelector(true)}
               >
-                <LuArrowLeft className='text-[16px]' />
-                Back
+                <LuPalette className="text-base" />
+                <span className="hidden md:block">Change Theme</span>
               </button>
 
               <button
-                className='flex items-center gap-2 bg-purple-100 hover:bg-purple-200 text-purple-700 font-medium px-4 py-2 rounded-lg transition-all'
-                onClick={uploadResumeImages}
-                disabled={isLoading}
+                className="flex items-center gap-2 px-3 py-1.5 border border-red-300 text-red-600 rounded-md text-sm hover:bg-red-50 transition"
+                onClick={handleDeleteResume}
               >
-                <LuSave className='text-[16px]' />
-                {isLoading ? "Updating..." : "Save & Exit"}
+                <LuTrash className="text-base" />
+                <span className="hidden md:block">Delete</span>
               </button>
 
               <button
-                className='flex items-center gap-2 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white font-semibold px-4 py-2 rounded-lg transition-all shadow-sm'
-                onClick={validateAndNext}
-                disabled={isLoading}
+                className="flex items-center gap-2 px-3 py-1.5 border border-blue-300 text-blue-600 rounded-md text-sm hover:bg-blue-50 transition"
+                onClick={() => setOpenPreviewModel(true)}
               >
-                {currentPage === 'additionalInfo' && (
-                  <LuDownload className='text-[16px]' />
-                )}
-                {currentPage === 'additionalInfo' ? "Preview & Download" : "Next"}
-                <LuArrowLeft className='text-[16px] rotate-180' />
+                <LuDownload className="text-base" />
+                <span className="hidden md:block">Preview & Download</span>
               </button>
             </div>
 
+          </div>
 
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
+            <div className='bg-white rounded-lg border border-purple-100 overflow-hidden p-6 h-[90vh] overflow-y-auto'>
+              {/* All form sections stacked vertically */}
+              {/* <h2 className='text-xl font-bold mb-2'>Personal Information</h2> */}
+              <ProfileInfoForm 
+                profileData={resumeData?.profileInfo}
+                updateSection={(key, value) => updateSection("profileInfo", key, value)}
+              />
+              <hr className='my-6' />
+
+              {/* <h2 className='text-xl font-bold mb-2'>Contact Information</h2> */}
+              <ContactInfoForm 
+                contactInfo={resumeData?.contactInfo}
+                updateSection={(key, value) => updateSection("contactInfo", key, value)}
+              />
+              <hr className='my-6' />
+
+              {/* <h2 className='text-xl font-bold mb-2'>Work Experience</h2> */}
+              <WorkExperienceForm
+                workExperience={resumeData?.workExperience}
+                updateArrayItem={(index, key, value) => updateArrayItem("workExperience", index, key, value)}
+                addArrayItem={(newItem) => addArrayItem("workExperience", newItem)}
+                removeArrayItem={(index) => removeArrayItem("workExperience", index)}
+              />
+              <hr className='my-6' />
+
+              {/* <h2 className='text-xl font-bold mb-2'>Education</h2> */}
+              <EducationDetailsForm
+                eduacationInfo={resumeData?.education}
+                updatedArrayItem={(index, key, value) => updateArrayItem("education", index, key, value)}
+                addArrayItem={(newItem) => addArrayItem('education', newItem)}
+                removeArrayItem={(index) => removeArrayItem('education', index)}
+              />
+              <hr className='my-6' />
+
+              {/* <h2 className='text-xl font-bold mb-2'>Skills</h2> */}
+              <SkillsInfoForm 
+                skillsInfo={resumeData?.skills}
+                updateArrayItem={(index, key, value) => updateArrayItem("skills", index, key, value)}
+                addArrayItem={(newItem) => addArrayItem("skills", newItem)}
+                removeArrayItem={(index) => removeArrayItem("skills", index)}
+              />
+              <hr className='my-6' />
+
+              {/* <h2 className='text-xl font-bold mb-2'>Projects</h2> */}
+              <ProjectsDeatilForm 
+                projectInfo={resumeData?.projects}
+                updateArrayItem={(index, key, value) => updateArrayItem("projects", index, key, value)}
+                addArrayItem={(newItem) => addArrayItem("projects", newItem)}
+                removeArrayItem={(index) => removeArrayItem("projects", index)}
+              />
+              <hr className='my-6' />
+
+              {/* <h2 className='text-xl font-bold mb-2'>Certifications</h2> */}
+              <CertificationInfoForm 
+                certificationInfo={resumeData?.certification}
+                updateArrayItem={(index, key, value) => updateArrayItem("certification", index, key, value)}
+                addArrayItem={(newItem) => addArrayItem("certification", newItem)}
+                removeArrayItem={(index) => removeArrayItem('certification', index)}
+              />
+              <hr className='my-6' />
+
+              {/* <h2 className='text-xl font-bold mb-2'>Additional Information</h2> */}
+              <AdditionalInfoCard 
+                languages={resumeData.languages}
+                interests={resumeData.interests}
+                updateArrayItem={(section, index, key, value) => updateArrayItem(section, index, key, value)}
+                addArrayItem={(section, newItem) => addArrayItem(section, newItem)}
+                removeArrayItem={(section, index) => removeArrayItem(section, index)}
+              />
+
+              <div className='flex items-center justify-end gap-3 mt-8'>
+                <button
+                  className='flex items-center gap-2 bg-purple-100 hover:bg-purple-200 text-purple-700 font-medium px-4 py-2 rounded-lg transition-all'
+                  onClick={uploadResumeImages}
+                  disabled={isLoading}
+                >
+                  <LuSave className='text-[16px]' />
+                  {isLoading ? "Updating..." : "Save & Exit"}
+                </button>
+              </div>
+
+              {errorMsg && (
+                <div className='flex items-center gap-2 text-[11px] font-medium text-amber-600 bg-amber-100 px-2 py-0.5 my-1 rounded'>
+                  <LuCircleAlert className='text-md'/>
+                  {errorMsg}
+                </div>
+              )}
+            </div>
+
+            <div ref={resumeRef} className='h-[100vh]'>
+              {/* { Resume Template } */}
+
+              <RenderResume 
+                  templateId= {resumeData?.template?.theme || ""}
+                  resumeData={resumeData}
+                  colorPalette={resumeData?.template?.colorPalette || []}
+                  containerWidth={baseWidth}
+              />
+            </div>
           </div>
         </div>
 
-        <div ref={resumeRef} className='h-[100vh]'>
-          {/* { Resume Template } */}
+        <Modal 
+            isOpen={openThemeSelector}
+            onClose={() => setOpenThemeSelector(false)}
+            title="Change Theme"
+        >
+          <div className='w-[90vw] h-[80vh]'>
+            <ThemeSelector 
+                selectTheme={resumeData?.template}
+                setSelectedTheme={(value) => {
+                  setResumeData((prevState) => ({
+                    ...prevState,
+                    template: value || prevState.template,
 
-          <RenderResume 
-              templateId= {resumeData?.template?.theme || ""}
+                  }));
+                }}
+
+                resumeData={null}
+                onClose={() => setOpenThemeSelector(false)}
+            />
+          </div>
+        </Modal>
+
+        <Modal
+          isOpen={openPreviewModel}
+          onClose={() => setOpenPreviewModel(false)}
+          title={resumeData.title}
+          showActionBtn
+          actionBtnText="Download"
+          actionBtnIcon={<LuDownload className='text-[16px]'/>}
+          onActionClick={() => reactToPrintFn()}
+        >
+          <div ref={resumeDownloadRef} className='w-[98vw] h-[90vh]'>
+            <RenderResume 
+              templateId={resumeData?.template?.theme || ""}
               resumeData={resumeData}
               colorPalette={resumeData?.template?.colorPalette || []}
-              containerWidth={baseWidth}
-          />
-
-
-
-        </div>
-      </div>
-    </div>
-   </DashboardLayout>
+            />
+          </div>
+        </Modal>
+      </DashboardLayout>
+    </>
   )
+}
+
+// Helper to capture a DOM element as an image (base64 PNG)
+async function captureElementAsImage(element) {
+  const canvas = await html2canvas(element);
+  return canvas.toDataURL('image/png');
+}
+
+// Helper to patch oklch() colors in the DOM tree
+function patchOklchColors(element) {
+  const treeWalker = document.createTreeWalker(element, NodeFilter.SHOW_ELEMENT);
+  while (treeWalker.nextNode()) {
+    const el = treeWalker.currentNode;
+    const style = window.getComputedStyle(el);
+    ['color', 'backgroundColor', 'borderColor'].forEach((prop) => {
+      const value = style[prop];
+      if (value && value.startsWith('oklch')) {
+        el.style[prop] = '#000'; // fallback to black, or use '#fff' for backgrounds
+      }
+    });
+  }
+}
+
+// Helper to convert a data URL to a File object
+function dataURLtoFile(dataurl, filename) {
+  const arr = dataurl.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
 }
 
 export default EditResume

@@ -1,31 +1,33 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { LuUser, LuUpload, LuTrash } from 'react-icons/lu';
 
-function ProfilePhotoSelector({ image, setImage }) {
+function ProfilePhotoSelector({ image, setImage, preview, setPreview }) {
   const inputRef = useRef(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
 
-  useEffect(() => {
-    if (image) {
-      const url = URL.createObjectURL(image);
-      setPreviewUrl(url);
+  // Helper to convert file to base64
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
 
-      // Clean up the URL object when component unmounts or image changes
-      return () => URL.revokeObjectURL(url);
-    } else {
-      setPreviewUrl(null);
-    }
-  }, [image]);
-
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      setImage(file); // Must be a useState setter from parent
+      setImage(file);
+      if (setPreview) {
+        const base64 = await fileToBase64(file);
+        setPreview(base64);
+      }
     }
   };
 
   const handleRemoveImage = () => {
     setImage(null);
+    setPreview && setPreview(null);
   };
 
   const onChooseFile = () => {
@@ -42,7 +44,7 @@ function ProfilePhotoSelector({ image, setImage }) {
         className="hidden"
       />
 
-      {!previewUrl ? (
+      {!preview ? (
         <div className="w-20 h-20 flex items-center justify-center bg-purple-50 rounded-full relative cursor-pointer">
           <LuUser className="text-4xl text-purple-500" />
           <button
@@ -55,13 +57,7 @@ function ProfilePhotoSelector({ image, setImage }) {
         </div>
       ) : (
         <div className="relative">
-          
-          {previewUrl && (
-              <img src={previewUrl} 
-              alt="profile" 
-              className="w-20 h-20 rounded-full object-cover" />
-          )}
-
+          <img src={preview} alt="profile" className="w-20 h-20 rounded-full object-cover" />
           <button
             type="button"
             className="w-8 h-8 flex items-center justify-center bg-red-500 text-white rounded-full absolute -bottom-1 -right-1"

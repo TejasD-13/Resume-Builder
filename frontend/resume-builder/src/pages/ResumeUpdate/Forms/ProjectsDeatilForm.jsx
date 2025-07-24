@@ -31,8 +31,8 @@ const ProjectsDetailForm = ({ projectInfo, updateArrayItem, addArrayItem, remove
                 placeholder="Short description about the project"
                 className="w-full border rounded-lg p-2 text-sm bg-white dark:bg-zinc-800 text-zinc-800 dark:text-white resize-none"
                 rows={3}
-                value={project.desciption || ''}
-                onChange={({ target }) => updateArrayItem(index, 'desciption', target.value)}
+                value={project.description || ''}
+                onChange={({ target }) => updateArrayItem(index, 'description', target.value)}
               />
             </div>
 
@@ -75,7 +75,7 @@ const ProjectsDetailForm = ({ projectInfo, updateArrayItem, addArrayItem, remove
           onClick={() =>
             addArrayItem({
               title: '',
-              desciption: '',
+              description: '',
               github: '',
               liveDemo: '',
             })
