@@ -3,8 +3,14 @@
 import TEMPLATE_ONE_IMG from '../assets/template-one.png';
 import TEMPLATE_TWO_IMG from '../assets/template-two.png';
 import TEMPLATE_THREE_IMG from '../assets/template-three.png';
-import TEMPLATE_FOUR_IMG from '../assets/template-four.png'
- 
+import TEMPLATE_FOUR_IMG from '../assets/template-four.png';
+import TEMPLATE_FIVE_IMG from '../assets/template-five.png';
+import TEMPLATE_SIX_IMG from '../assets/template-six.png';
+import TEMPLATE_SEVEN_IMG from '../assets/template-seven.png';
+import TEMPLATE_EIGHT_IMG from '../assets/template-eight.png';
+import TEMPLATE_NINE_IMG from '../assets/template-nine.png';
+import TEMPLATE_TEN_IMG from '../assets/template-ten.png';
+
 export const resumeTemplates = [
   {
     id: '01',
@@ -26,6 +32,36 @@ export const resumeTemplates = [
     thumbnailImg: TEMPLATE_FOUR_IMG,
     colorPaletteCode: 'themeFour',
   },
+  {
+    id: '05',
+    thumbnailImg: TEMPLATE_FIVE_IMG,
+    colorPaletteCode: 'themeFive',
+  },
+  {
+    id: '06',
+    thumbnailImg: TEMPLATE_SIX_IMG,
+    colorPaletteCode: 'themeSix',
+  },
+  {
+    id: '07',
+    thumbnailImg: TEMPLATE_SEVEN_IMG,
+    colorPaletteCode: 'themeSeven',
+  },
+  {
+    id: '08',
+    thumbnailImg: TEMPLATE_EIGHT_IMG,
+    colorPaletteCode: 'themeEight',
+  },
+  {
+    id: '09',
+    thumbnailImg: TEMPLATE_NINE_IMG,
+    colorPaletteCode: 'themeNine',
+  },
+  {
+    id: '10',
+    thumbnailImg: TEMPLATE_TEN_IMG,
+    colorPaletteCode: 'themeTen',
+  },
 ];
 
 export const themeColorPalette = {
@@ -42,6 +78,51 @@ export const themeColorPalette = {
     ["#F7F7FF", "#F2F2F2", "#D9D9FF", "#7A77AA", "#2B3342"],
     ["#F7F7FF", "#E4E4E4", "#CFCFCF", "#444444", "#222222"],
     ["#E3F2FD", "#99CAF9", "#8AD2F4", "#1E88E5", "#0047A1"],
+  ],
+  themeTwo: [
+    ["#FFF5E1", "#FFD6A5", "#FFB085", "#FF6363", "#3A3A3A"],
+    ["#F0F4C3", "#DCEDC8", "#AED581", "#7CB342", "#33691E"],
+    ["#E1F5FE", "#81D4FA", "#29B6F6", "#0288D1", "#01579B"],
+  ],
+  themeThree: [
+    ["#F3E5F5", "#CE93D8", "#AB47BC", "#7E57C2", "#4527A0"],
+    ["#E8EAF6", "#7986CB", "#5C6BC0", "#3949AB", "#1A237E"],
+    ["#FBE9E7", "#FFAB91", "#FF7043", "#D84315", "#BF360C"],
+  ],
+  themeFour: [
+    ["#E0F2F1", "#80CBC4", "#26A69A", "#00897B", "#004D40"],
+    ["#FFFDE7", "#FFF59D", "#FFF176", "#FFD600", "#FF6F00"],
+    ["#F9FBE7", "#DCE775", "#D4E157", "#AFB42B", "#827717"],
+  ],
+  themeFive: [
+    ["#F8BBD0", "#F06292", "#EC407A", "#AD1457", "#880E4F"],
+    ["#F3E5F5", "#BA68C8", "#8E24AA", "#6A1B9A", "#4A148C"],
+    ["#E1F5FE", "#4FC3F7", "#0288D1", "#01579B", "#002F6C"],
+  ],
+  themeSix: [
+    ["#F8F9FA", "#E9ECEF", "#DEE2E6", "#6C757D", "#495057"],
+    ["#F8F9FA", "#E9ECEF", "#DEE2E6", "#6C757D", "#495057"],
+    ["#F8F9FA", "#E9ECEF", "#DEE2E6", "#6C757D", "#495057"],
+  ],
+  themeSeven: [
+    ["#FFFDE7", "#FFF9C4", "#FFF59D", "#FBC02D", "#FFA000"],
+    ["#E1F5FE", "#B3E5FC", "#4FC3F7", "#0288D1", "#01579B"],
+    ["#E0F2F1", "#80CBC4", "#26A69A", "#00897B", "#004D40"],
+  ],
+  themeEight: [
+    ["#F3E5F5", "#CE93D8", "#AB47BC", "#7E57C2", "#4527A0"],
+    ["#E8EAF6", "#7986CB", "#5C6BC0", "#3949AB", "#1A237E"],
+    ["#FBE9E7", "#FFAB91", "#FF7043", "#D84315", "#BF360C"],
+  ],
+  themeNine: [
+    ["#E0F2F1", "#80CBC4", "#26A69A", "#00897B", "#004D40"],
+    ["#FFFDE7", "#FFF59D", "#FFF176", "#FFD600", "#FF6F00"],
+    ["#F9FBE7", "#DCE775", "#D4E157", "#AFB42B", "#827717"],
+  ],
+  themeTen: [
+    ["#F8BBD0", "#F06292", "#EC407A", "#AD1457", "#880E4F"],
+    ["#F3E5F5", "#BA68C8", "#8E24AA", "#6A1B9A", "#4A148C"],
+    ["#E1F5FE", "#4FC3F7", "#0288D1", "#01579B", "#002F6C"],
   ],
 };
 

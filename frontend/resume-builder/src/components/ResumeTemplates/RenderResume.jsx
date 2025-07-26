@@ -3,6 +3,12 @@ import TemplateOne from './TemplateOne';
 import TemplateTwo from './TemplateTwo'
 import TemplateThree from './TemplateThree';
 import TemplateFour from './TemplateFour'
+import TemplateFive from './TemplateFive';
+import TemplateSix from './TemplateSix';
+import TemplateSeven from './TemplateSeven';
+import TemplateEight from './TemplateEight';
+import TemplateNine from './TemplateNine';
+import TemplateTen from './TemplateTen';
 
 const RenderResume = ({
     templateId, resumeData, colorPalette, containerWidth
@@ -37,6 +43,54 @@ const RenderResume = ({
         case "04":
             return (
                 <TemplateFour
+                    resumeData={resumeData}
+                    colorPalette={colorPalette}
+                    containerWidth={containerWidth}
+                />
+            );
+        case "05":
+            return (
+                <TemplateFive
+                    resumeData={resumeData}
+                    colorPalette={colorPalette}
+                    containerWidth={containerWidth}
+                />
+            );
+        case "06":
+            return (
+                <TemplateSix
+                    resumeData={resumeData}
+                    colorPalette={colorPalette}
+                    containerWidth={containerWidth}
+                />
+            );
+        case "07":
+            return (
+                <TemplateSeven
+                    resumeData={resumeData}
+                    colorPalette={colorPalette}
+                    containerWidth={containerWidth}
+                />
+            );
+        case "08":
+            return (
+                <TemplateEight
+                    resumeData={resumeData}
+                    colorPalette={colorPalette}
+                    containerWidth={containerWidth}
+                />
+            );
+         case "09":
+            return (
+                <TemplateNine
+                    resumeData={resumeData}
+                    colorPalette={colorPalette}
+                    containerWidth={containerWidth}
+                />
+            );
+        case "10":
+            return (
+                <TemplateTen
                     resumeData={resumeData}
                     colorPalette={colorPalette}
                     containerWidth={containerWidth}
