@@ -47,7 +47,7 @@ function Login({ setCurrentPage, setOpenAuthModel }) {
 
         setOpenAuthModel(false);
         setTimeout(() => {
-          navigate("/dashboard");
+          navigate("/");
           console.log("Login successful, redirecting to dashboard...");
         }, 100);
       }

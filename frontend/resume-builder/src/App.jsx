@@ -8,6 +8,9 @@ import Signup from './pages/Auth/Signup'
 import Dashboard from './pages/Home/Dashboard'
 import EditResume from './pages/ResumeUpdate/EditResume'
 import UserProvider from './context/userContext'
+import ResumeAnalyzer from './pages/Home/ResumeAnalyzer';
+import ATSScoreChecker from './pages/Home/ATSScoreChecker';
+
 function App() {
 
   return (
@@ -20,6 +23,8 @@ function App() {
           <Route path='/signup' element={<Signup/>} />
           <Route path='/dashboard' element={<Dashboard/>} />
           <Route path='/resume/:resumeId' element={<EditResume/>} />
+          <Route path='/resume-analyzer' element={<ResumeAnalyzer/>} />
+          <Route path='/ats-score-checker' element={<ATSScoreChecker/>} />
 
         </Routes>
       </Router>

@@ -2,46 +2,40 @@ import React, { useEffect, useState } from 'react';
 import { getLightColorFromImage } from '../../utils/helper';
 
 function ResumeSummaryCard({ imgUrl, title, lastUpdated, onSelect }) {
-  const [bgColor, setBgColor ] = useState('#ffffff');
+  const [bgColor, setBgColor] = useState('#f9f9f9');
 
   useEffect(() => {
-    if(imgUrl){
+    if (imgUrl) {
       getLightColorFromImage(imgUrl)
-      .then((color) => {
-        setBgColor(color)
-      })
-      .catch(() => {
-        setBgColor('#ffffff'); 
-      })
+        .then(setBgColor)
+        .catch(() => setBgColor('#f9f9f9'));
     }
-  }, [imgUrl])
+  }, [imgUrl]);
 
   return (
     <div
-      className='h-[300px] flex flex-col items-center justify-between bg-white rounded-lg border border-gray-200 hover:border-purple-300 overflow-hidden cursor-pointer'
-      style={{backgroundColor: bgColor}}
       onClick={onSelect}
+      className="group cursor-pointer transition-all duration-300 hover:shadow-xl rounded-xl border border-gray-200 overflow-hidden"
+      style={{ backgroundColor: bgColor }}
     >
-      <div className='p-4'>
+      <div className="h-44 w-full bg-gray-100 flex items-center justify-center overflow-hidden">
         {imgUrl ? (
-          <img 
-            src={imgUrl} 
-            alt="Resume thumbnail"
-            className='w-[100%] h-[200px] rounded object-cover'   
+          <img
+            src={imgUrl}
+            alt="Resume preview"
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className='w-full h-[200px] flex items-center justify-center bg-gray-100 rounded'>
-            <span className='text-gray-400 text-sm'>No Image</span>
-          </div>
+          <span className="text-gray-400 text-sm">No Preview</span>
         )}
       </div>
-    
-      <div className='w-full bg-white px-4 py-3'>
-        <h5 className='text-sm font-medium truncate overflow-hidden whitespace-nowrap'>
-          {title || "Untitled Resume"}
-        </h5>
-        <p className='text-xs font-medium text-gray-500 mt-0.5'>
-          Last Updated: {lastUpdated || "N/A"}
+
+      <div className="bg-white p-4">
+        <h3 className="text-lg font-semibold text-gray-800 truncate">
+          {title || 'Untitled Resume'}
+        </h3>
+        <p className="text-xs text-gray-500 mt-1">
+          Last Updated: {lastUpdated || 'N/A'}
         </p>
       </div>
     </div>
