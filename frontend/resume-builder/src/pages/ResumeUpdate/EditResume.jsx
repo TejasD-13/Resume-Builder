@@ -8,6 +8,7 @@ import {
   LuSave,
   LuTrash2,
   LuTrash,
+  LuFileText,
 } from 'react-icons/lu';
 import { toast } from 'react-hot-toast';
 import DashboardLayout from '../../components/Layouts/DashboardLayout';
@@ -30,6 +31,7 @@ import html2canvas from 'html2canvas';
 import Modal from '../../components/Modal'
 import ThemeSelector from './ThemeSelector';
 import Chatbot from '../../components/Chatbot/Chatbot';
+import { DUMMY_RESUME_DATA } from '../../utils/data';
 
 function EditResume() {
   const {resumeId} = useParams();
@@ -333,6 +335,35 @@ function EditResume() {
     }
   }
 
+  const loadDummyData = () => {
+    setResumeData(prevData => ({
+      ...prevData,
+      profileInfo: {
+        ...prevData.profileInfo,
+        fullName: DUMMY_RESUME_DATA.profileInfo.fullName,
+        designation: DUMMY_RESUME_DATA.profileInfo.designation,
+        summary: DUMMY_RESUME_DATA.profileInfo.summary,
+      },
+      contactInfo: {
+        ...prevData.contactInfo,
+        email: DUMMY_RESUME_DATA.contactInfo.email,
+        phone: DUMMY_RESUME_DATA.contactInfo.phone,
+        location: DUMMY_RESUME_DATA.contactInfo.location,
+        linkedIn: DUMMY_RESUME_DATA.contactInfo.linkedin,
+        github: DUMMY_RESUME_DATA.contactInfo.github,
+        website: DUMMY_RESUME_DATA.contactInfo.website,
+      },
+      workExperience: DUMMY_RESUME_DATA.workExperience,
+      education: DUMMY_RESUME_DATA.education,
+      skills: DUMMY_RESUME_DATA.skills,
+      projects: DUMMY_RESUME_DATA.projects,
+      certification: DUMMY_RESUME_DATA.certifications,
+      languages: DUMMY_RESUME_DATA.languages,
+      interests: DUMMY_RESUME_DATA.interests,
+    }));
+    toast.success('Sample data loaded successfully!');
+  }
+
   useEffect(() => {
     updateBaseWidth();
     window.addEventListener('resize', updateBaseWidth);
@@ -365,6 +396,14 @@ function EditResume() {
               />
 
               <div className="flex items-center gap-3 md:gap-4">
+              <button
+                className="flex items-center gap-2 px-3 py-1.5 border border-green-300 text-green-600 rounded-md text-sm hover:bg-green-50 transition"
+                onClick={loadDummyData}
+              >
+                <LuFileText className="text-base" />
+                <span className="hidden md:block">Load Sample Data</span>
+              </button>
+
               <button
                 className="flex items-center gap-2 px-3 py-1.5 border border-gray-300 rounded-md text-sm hover:bg-gray-100 transition"
                 onClick={() => setOpenThemeSelector(true)}

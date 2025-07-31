@@ -1,5 +1,6 @@
 import React from 'react';
 import Input from '../../../components/Inputs/Input';
+import YearInput from '../../../components/Inputs/YearInput';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
 
 const cardStyle =
@@ -31,10 +32,9 @@ const CertificationInfoForm = ({
               value={cert.issuer || ''}
               onChange={({ target }) => updateArrayItem(index, 'issuer', target.value)}
             />
-            <Input
+            <YearInput
               label="Year"
               placeholder="e.g. 2023"
-              type="number"
               value={cert.year || ''}
               onChange={({ target }) => updateArrayItem(index, 'year', target.value)}
             />

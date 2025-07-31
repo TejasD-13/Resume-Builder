@@ -1,5 +1,6 @@
 import React from 'react';
 import Input from '../../../components/Inputs/Input';
+import DateInput from '../../../components/Inputs/DateInput';
 import { LuPlus, LuTrash2 } from 'react-icons/lu';
 
 function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, removeArrayItem }) {
@@ -34,18 +35,16 @@ function WorkExperienceForm({ workExperience, updateArrayItem, addArrayItem, rem
                 }
               />
 
-              <Input
+              <DateInput
                 label='Start Date'
-                type='month'
                 value={experience.startDate || ''}
                 onChange={({ target }) =>
                   updateArrayItem(index, 'startDate', target.value)
                 }
               />
 
-              <Input
+              <DateInput
                 label='End Date'
-                type='month'
                 value={experience.endDate || ''}
                 onChange={({ target }) =>
                   updateArrayItem(index, 'endDate', target.value)

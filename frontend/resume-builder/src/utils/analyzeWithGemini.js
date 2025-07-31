@@ -3,53 +3,57 @@ export async function analyzeWithGemini(resumeText) {
   if (!apiKey) throw new Error('Gemini API key not found');
 
   const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
-  
-  const prompt = `
-  You are a professional resume reviewer and career coach.
-  
-  Analyze the following resume and return your feedback in plain text format
-  
-  Use only:
-  - Plain headings with ## or ###.
-  - Simple hyphen (-) for lists.
-  - No asterisks, stars, or fancy characters.
-  
-  Follow this structure exactly:
-  
-  ## Resume Summary
-  - Write 2 to 3 plain-text lines about the overall quality and tone.
-  
-  ## ATS Compatibility Suggestions
-  - Point out any formatting issues for ATS.
-  - Note any missing resume sections or weak keywords.
-  
-  ## Recommended Improvements
-  - Reword weak bullet points or vague phrasing.
-  - Recommend better structure, phrasing, or clarity.
-  
-  ## Suggested Skills or Courses
-  Suggest relevant online courses or certifications, grouped like this:
-  
-  ### Technical Skills
-  - Data Structures and Algorithms: Coursera - Algorithms Specialization by Stanford
-  - Software Design Patterns: Udemy - Design Patterns in Modern C++
-  
-  ### Tools & Platforms
-  - Cloud Engineering: Coursera - Google Cloud Professional Certificate
-  
-  ### Soft Skills
-  - Communication for Developers: Udemy - Effective Communication for Engineers
-  
-  Now evaluate the following resume and return results in the exact format:
-  
-  Resume:
-  ${resumeText}
-  `.trim();
-  
 
+  const prompt = `
+You are a professional resume reviewer and career coach.
+
+Analyze the following resume and return your feedback in **plain text** format.
+
+Use this exact structure:
+
+## Resume Summary
+- Write 2–3 lines about the overall quality and tone.
+
+## ATS Compatibility Suggestions
+- Point out any formatting issues for ATS.
+- Note any missing resume sections or weak keywords.
+
+## Recommended Improvements
+- Reword weak bullet points or vague phrasing.
+- Recommend better structure, phrasing, or clarity.
+
+## Suggested Skills or Courses
+Suggest relevant online courses or certifications, grouped like this:
+
+### Technical Skills
+- Example: Coursera – Algorithms Specialization by Stanford
+
+### Tools & Platforms
+- Example: Coursera – Google Cloud Professional Certificate
+
+### Soft Skills
+- Example: Udemy – Effective Communication for Engineers
+
+## Suggested Job Domains
+Based on the resume’s skills and experience, recommend 2–3 career paths:
+- Frontend Development
+- Backend Development
+- QA Automation
+- Cloud Engineering
+- AI/ML Research
+
+Now evaluate the following resume and return results in the exact format:
+
+Resume:
+${resumeText}
+  `;
 
   const body = {
-    contents: [{ parts: [{ text: prompt }] }]
+    contents: [
+      {
+        parts: [{ text: prompt }]
+      }
+    ]
   };
 
   try {
@@ -62,7 +66,7 @@ export async function analyzeWithGemini(resumeText) {
     if (!response.ok) {
       const errorText = await response.text();
       let errorMessage = 'Failed to analyze resume with Gemini';
-      
+
       switch (response.status) {
         case 400:
           errorMessage = 'Invalid request. Please check your resume content.';
@@ -80,12 +84,12 @@ export async function analyzeWithGemini(resumeText) {
           errorMessage = 'Gemini service is temporarily unavailable. Please try again in a few minutes.';
           break;
         case 500:
-          errorMessage = 'Gemini service error. Please try again.';
+          errorMessage = 'Internal server error. Please try again later.';
           break;
         default:
           errorMessage = `API Error (${response.status}): ${errorText}`;
       }
-      
+
       throw new Error(errorMessage);
     }
 
@@ -94,19 +98,19 @@ export async function analyzeWithGemini(resumeText) {
 
     const extractSection = (label) => {
       const regex = new RegExp(
-        `(?:\\*\\*|##|\\n)?\\s*${label}\\s*[:\\-–]*\\s*\\n?([\\s\\S]*?)(?=\\n\\s*(?:\\*\\*|##|[1-9]\\.|✍️|✅|🛠️|📚|📊|$))`,
+        `(?:\\*\\*|##)?\\s*${label}\\s*\\n+([\\s\\S]*?)(?=\\n\\s*(?:##|\\*\\*|$))`,
         'i'
       );
       const match = text.match(regex);
       return match ? match[1].trim() : '';
     };
-   
+
     return {
       summary: extractSection('Resume Summary'),
       atsSuggestions: extractSection('ATS Compatibility Suggestions'),
       recommendedEdits: extractSection('Recommended Improvements'),
       suggestedCourses: extractSection('Suggested Skills or Courses'),
-      raw: text
+      raw: text,
     };
   } catch (error) {
     if (error.name === 'TypeError' && error.message.includes('fetch')) {
@@ -115,4 +119,3 @@ export async function analyzeWithGemini(resumeText) {
     throw error;
   }
 }
-  

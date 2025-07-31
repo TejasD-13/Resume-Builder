@@ -1,5 +1,6 @@
 import React from 'react'
 import Input from '../../../components/Inputs/Input'
+import DateInput from '../../../components/Inputs/DateInput'
 import { LuPlus, LuTrash2 } from 'react-icons/lu'
 
 function EducationDetailsForm({
@@ -39,18 +40,16 @@ function EducationDetailsForm({
                 }
               />
 
-              <Input
+              <DateInput
                 label="Start Date"
-                type="month"
                 value={education.startDate || ''}
                 onChange={({ target }) =>
                   updatedArrayItem(index, 'startDate', target.value)
                 }
               />
 
-              <Input
+              <DateInput
                 label="End Date"
-                type="month"
                 value={education.endDate || ''}
                 onChange={({ target }) =>
                   updatedArrayItem(index, 'endDate', target.value)
